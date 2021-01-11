@@ -3,7 +3,7 @@
 }
 
 body {
-  background-color:#2878a7;
+  background-color:#9dabb3;
 
 }
 
@@ -54,8 +54,9 @@ aside{
 }
 
 img {
-  max-height: 300px;
-  max-width: 100%;
+  
+  width: 300px;
+  height:300px;
   margin: 0 auto;
 }
 /* #result ul{
