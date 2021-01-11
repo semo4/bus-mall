@@ -8,8 +8,18 @@ var rightImg = document.getElementById('right_img');
 
 var productSection = document.getElementById('all_img');
 
+var productCanvas = document.getElementById('productChart').getContext('2d');
+var productCanvasLine = document.getElementById('productLine').getContext('2d');
+var productCanvasPie = document.getElementById('productPie').getContext('2d');
+
+
+
+
+
+var checkExist = [];
+
 var productImage= [];
-var numberOfChooses = 25;
+var numberOfChooses = 10;
 function AllProducts(image){
   this.image = "img/"+image;
 
@@ -33,17 +43,36 @@ function renderProducts(leftImage, centerImage,rightImage) {
   productImage[rightImage].shown++;
 }
 
+function isExist(productdisplayed){
+  for (var index = 0; index < checkExist.length; index++) {
+    if (checkExist[index].name === productdisplayed) {
+      return true;
+    }
+  }
+  return false;  
+}
+
 
 function chooseImage(){
+  do{
   var leftImage = Math.round(Math.random() * (productImage.length - 1));
+  var leftImageName = productImage[leftImage].name; 
+  } while (isExist(leftImageName)); 
   do {
     var centerImage = Math.round(Math.random() * (productImage.length - 1));
-    do{
-      var rightImage = Math.round(Math.random() * (productImage.length - 1));
+    var centerImageName = productImage[centerImage].name; 
+    var rightImage = Math.round(Math.random() * (productImage.length - 1));
+    var rightImageName = productImage[rightImage].name; 
+  } while (leftImage === centerImage ||centerImage === rightImage || leftImage === rightImage || isExist(centerImageName)|| isExist(rightImageName));
 
-    }while (centerImage === rightImage || leftImage === rightImage);
+  checkExist = [];
 
-  } while (leftImage === centerImage);
+  checkExist.push(
+    productImage[leftImage],
+    productImage[centerImage],
+    productImage[rightImage]
+  );
+
   renderProducts(leftImage,centerImage,rightImage);
 }
 
@@ -56,6 +85,7 @@ function checkImageProduct(objectIndicator) {
     }
   }
 }
+
 
 
 var displayResult = document.getElementById("display");
@@ -74,6 +104,7 @@ function countProduct(event) {
   } else {
     productSection.removeEventListener('click',countProduct);
     displayResult.disabled = false;
+    
   }
 }
 
@@ -102,6 +133,403 @@ console.log(productImage);
 
 chooseImage();
 
+function renderBarChart() {
+
+  var productNameArray = [];
+  var productCounterArray = [];
+  var productShownArray = [];
+
+
+  for (var index = 0; index < productImage.length; index++) {
+    productNameArray.push(productImage[index].name);
+    productCounterArray.push(productImage[index].counter);
+    productShownArray.push(productImage[index].shown);
+    
+  }
+ 
+  var productChartDisplay = new Chart(productCanvas, {
+    type: 'bar',
+    data: {
+      labels: productNameArray, 
+      datasets: [
+        {
+        label: '# of Product Clicks',
+        data: productCounterArray, 
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+
+          'rgba(255, 92, 122, 0.2)',
+          'rgba(34, 132, 215, 0.2)',
+          'rgba(255, 226, 116, 0.2)',
+          'rgba(85, 162, 122, 0.2)',
+          'rgba(133, 82, 255, 0.2)',
+          'rgba(255, 149, 24, 0.2)',
+          'rgba(255, 90, 102, 0.2)',
+          'rgba(84, 122, 245, 0.2)',
+          'rgba(255, 106, 96, 0.2)',
+          'rgba(35, 142, 182, 0.2)',
+          'rgba(133, 72, 255, 0.2)',
+          'rgba(255, 109, 94, 0.2)',
+          'rgba(255, 39, 102, 0.2)',
+          'rgba(54, 192, 215, 0.2)'
+          
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)'
+        ],
+        borderWidth: 1
+      },
+      {
+        label: 'Time shown for the Single Product',
+        data: productShownArray, // array of values (count for each goat when it was clicked)
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            steps: 10,
+            stepValue: 5
+          }
+        }]
+      }
+    }
+  });
+}
+
+function renderLineChart() {
+
+  var productNameArray = [];
+  var productCounterArray = [];
+  var productShownArray = [];
+
+
+  for (var index = 0; index < productImage.length; index++) {
+    productNameArray.push(productImage[index].name);
+    productCounterArray.push(productImage[index].counter);
+    productShownArray.push(productImage[index].shown);
+    
+  }
+ 
+  var productLineDisplay = new Chart(productCanvasLine, {
+    type: 'line',
+    data: {
+      labels: productNameArray, 
+      datasets: [
+        {
+        label: '# of Product Clicks',
+        data: productCounterArray, 
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)'
+          
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)'
+        ],
+        borderWidth: 1
+      },
+      {
+        label: 'Time shown for the Single Product',
+        data: productShownArray, // array of values (count for each goat when it was clicked)
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+}
+
+function renderPieChart() {
+
+  var productNameArray = [];
+  var productCounterArray = [];
+  var productShownArray = [];
+
+
+  for (var index = 0; index < productImage.length; index++) {
+    productNameArray.push(productImage[index].name);
+    productCounterArray.push(productImage[index].counter);
+    productShownArray.push(productImage[index].shown);
+    
+  }
+ 
+  var productPieDisplay = new Chart(productCanvasPie, {
+    type: 'pie',
+    data: {
+      labels: productNameArray, 
+      datasets: [
+        {
+        label: '# of Product Clicks',
+        data: productCounterArray, 
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)'
+          
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)'
+        ],
+        borderWidth: 1
+      },
+      {
+        label: 'Time shown for the Single Product',
+        data: productShownArray, // array of values (count for each goat when it was clicked)
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            segmentShowStroke : false,
+	          animateScale : true
+          }
+        }]
+      }
+    }
+  });
+}
 
 var section = document.getElementById("result");
 
@@ -109,11 +537,14 @@ productSection.addEventListener('click', countProduct);
 
 function renderList(event){
   event.preventDefault();
+  renderBarChart();
+  renderLineChart();
+  renderPieChart();
   var ul = document.createElement("ul");
   section.appendChild(ul);
   for (var j =0; j<productImage.length; j++){
     var li = document.createElement("li");
-    li.textContent = productImage[j].name + " had "+productImage[j].counter +" votes, and was seen "+ productImage[j].shown +" times.";
+    li.textContent = "- "+ productImage[j].name + " had "+productImage[j].counter +" votes, and was seen "+ productImage[j].shown +" times.";
     ul.appendChild(li);
   } 
 }
